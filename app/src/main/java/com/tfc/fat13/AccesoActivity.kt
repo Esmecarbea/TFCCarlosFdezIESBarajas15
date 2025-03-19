@@ -1,5 +1,6 @@
 package com.tfc.fat13
 
+import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -24,12 +25,26 @@ class AccesoActivity : AppCompatActivity() {
         textoEsperandoCamara = findViewById(R.id.texto_esperando_camara)
         videoStreamView = findViewById(R.id.video_stream_view)
 
-        // Handler para retrasar la desaparición del Lottie y la aparición del VideoView
         Handler(Looper.getMainLooper()).postDelayed({
             // Código a ejecutar después de 4 segundos
-            lottieEsperandoCamara.visibility = View.GONE // Oculta la animación Lottie
-            textoEsperandoCamara.visibility = View.GONE // Oculta el texto "Esperando Cámara"
-            videoStreamView.visibility = View.VISIBLE // Muestra el VideoView
+            lottieEsperandoCamara.visibility = View.GONE
+            textoEsperandoCamara.visibility = View.GONE
+            videoStreamView.visibility = View.VISIBLE
+
+            Thread.sleep(500)
+
+            val videoUri = Uri.parse("http://192.168.1.163:81/stream")
+
+            videoStreamView.setVideoURI(videoUri)
+
+            videoStreamView.setOnPreparedListener { mediaPlayer ->
+                mediaPlayer.start() // Inicia la reproducción
+            }
+            // Listener para errores (OPCIONAL, pero recomendado)
+            videoStreamView.setOnErrorListener { mediaPlayer, what, extra ->
+                println("Error en VideoView: What: $what, Extra: $extra")
+                true // Indica que hemos manejado el error
+            }
         }, 4000) // 4000 milisegundos = 4 segundos
     }
 }

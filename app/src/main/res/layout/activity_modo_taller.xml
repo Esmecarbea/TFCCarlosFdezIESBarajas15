@@ -7,6 +7,16 @@
     android:background="@drawable/background_gradient"
     tools:context=".ModoTallerActivity">
 
+    <ImageView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/fondo_rejilla"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline_center"
         android:layout_width="wrap_content"
@@ -16,10 +26,12 @@
 
     <TextView
         android:id="@+id/texto_modo_taller"
-        android:layout_width="150dp"
-        android:layout_height="243dp"
+        android:layout_width="301dp"
+        android:layout_height="142dp"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
+        android:background="@drawable/marco_texto"
+        android:gravity="center_vertical"
         android:text="@string/texto_modo_taller"
         android:textAlignment="center"
         android:textColor="@color/white"
@@ -47,7 +59,7 @@
         android:id="@+id/boton_confirmar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="76dp"
+        android:layout_marginEnd="80dp"
         android:backgroundTint="@color/green"
         android:paddingVertical="24dp"
         android:text="@string/confirmar"

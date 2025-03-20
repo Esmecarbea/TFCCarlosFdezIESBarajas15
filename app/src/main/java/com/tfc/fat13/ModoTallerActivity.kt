@@ -1,5 +1,6 @@
 package com.tfc.fat13
 
+import android.animation.ArgbEvaluator
 import android.animation.ObjectAnimator
 import android.content.Intent
 import android.os.Bundle
@@ -24,11 +25,11 @@ class ModoTallerActivity : AppCompatActivity() {
         botonConfirmar.setOnClickListener {
             // Por ahora no hacemos nada al pulsar "Confirmar"
         }
-
-        val animacionParpadeo = ObjectAnimator.ofFloat(textoModoTaller, "alpha", 1f, 0f)
-        animacionParpadeo.duration = 500 // Duración de cada parpadeo en milisegundos
-        animacionParpadeo.repeatMode = ObjectAnimator.REVERSE // Se invierte al final
-        animacionParpadeo.repeatCount = ObjectAnimator.INFINITE // Se repite infinitamente
-        animacionParpadeo.start()
+        val colorAnim = ObjectAnimator.ofInt(textoModoTaller, "textColor", 0xFFFFFFFF.toInt(), 0x00FFFFFF)
+        colorAnim.setDuration(1000)
+        colorAnim.setEvaluator(ArgbEvaluator())
+        colorAnim.setRepeatCount(ObjectAnimator.INFINITE)
+        colorAnim.setRepeatMode(ObjectAnimator.REVERSE)
+        colorAnim.start()
     }
 }

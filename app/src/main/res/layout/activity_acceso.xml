@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/background_gradient"
-    tools:context=".AccesoActivity"> <!-- He cambiado tools:context a AccesoActivity, asegúrate de crear esta Activity más adelante -->
+    tools:context=".AccesoActivity">
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline_top_third"
@@ -43,7 +43,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <VideoView
+    <ImageView
         android:id="@+id/video_stream_view"
         android:layout_width="184dp"
         android:layout_height="177dp"
@@ -53,13 +53,13 @@
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.619" />  <!-- ETIQUETA CORRECTA AUTO-CERRADA -->
-
+        app:layout_constraintVertical_bias="0.619" />
 
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/lottie_esperando_camara"
         android:layout_width="169dp"
         android:layout_height="175dp"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="@+id/guideline_top_third"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.495"
@@ -68,7 +68,7 @@
         app:layout_constraintVertical_bias="0.612"
         app:lottie_autoPlay="true"
         app:lottie_loop="true"
-        app:lottie_rawRes="@raw/scanface"></com.airbnb.lottie.LottieAnimationView>
+        app:lottie_rawRes="@raw/scanface" />
 
     <TextView
         android:id="@+id/texto_esperando_camara"
@@ -78,9 +78,9 @@
         android:text="Esperando Cámara"
         android:textColor="@android:color/white"
         android:textSize="20sp"
+        android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/lottie_esperando_camara" />
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">FaT13</string>
+    <string name="acceso">Acceso</string>
+    <string name="modo_taller">Modo Taller</string>
+    <string name="texto_modo_taller">Vas a AUTORIZAR que CUALQUIER persona ARRANQUE tu coche</string>
+    <string name="cancelar">Cancelar</string>
+    <string name="confirmar">Confirmar</string>
 </resources>

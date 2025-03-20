@@ -1,50 +1,105 @@
 package com.tfc.fat13
 
-import android.net.Uri
+import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.View
+import android.widget.ImageView
 import android.widget.TextView
-import android.widget.VideoView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import com.airbnb.lottie.LottieAnimationView
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.io.ByteArrayOutputStream
+import java.io.IOException
+import java.net.HttpURLConnection
+import java.net.URL
 
 class AccesoActivity : AppCompatActivity() {
 
     private lateinit var lottieEsperandoCamara: LottieAnimationView
     private lateinit var textoEsperandoCamara: TextView
-    private lateinit var videoStreamView: VideoView
+    private lateinit var videoStreamView: ImageView
+    private val handler = Handler(Looper.getMainLooper())
+    private var running = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_acceso)
 
-        // Inicialización de las variables para los componentes de la UI
         lottieEsperandoCamara = findViewById(R.id.lottie_esperando_camara)
         textoEsperandoCamara = findViewById(R.id.texto_esperando_camara)
         videoStreamView = findViewById(R.id.video_stream_view)
 
         Handler(Looper.getMainLooper()).postDelayed({
-            // Código a ejecutar después de 4 segundos
+            Log.d("AccesoActivity", "Entrando en postDelayed")
             lottieEsperandoCamara.visibility = View.GONE
             textoEsperandoCamara.visibility = View.GONE
             videoStreamView.visibility = View.VISIBLE
+            startMJpegStream("http://192.168.1.163/stream")
+        }, 4000)
+    }
 
-            Thread.sleep(500)
+    override fun onPause() {
+        super.onPause()
+        stopMJpegStream()
+    }
 
-            val videoUri = Uri.parse("http://192.168.1.163:81/stream")
+    override fun onResume() {
+        super.onResume()
+        if (!running) {
+            startMJpegStream("http://192.168.1.163/stream")
+        }
+    }
 
-            videoStreamView.setVideoURI(videoUri)
+    private fun startMJpegStream(url: String) {
+        running = true
+        lifecycleScope.launch(Dispatchers.IO) {
+            try {
+                val mUrl = URL(url)
+                val connection = mUrl.openConnection() as HttpURLConnection
+                connection.connect()
 
-            videoStreamView.setOnPreparedListener { mediaPlayer ->
-                mediaPlayer.start() // Inicia la reproducción
+                val inputStream = connection.inputStream
+                val buffer = ByteArray(1024)
+                var bytes: Int = 0
+                var byteArrayOutputStream = ByteArrayOutputStream()
+
+                while (running && inputStream.read(buffer).also { bytes = it } != -1) {
+                    byteArrayOutputStream.write(buffer, 0, bytes)
+
+                    if (byteArrayOutputStream.toString().contains("\r\n\r\n")) {
+                        val bitmap =
+                            BitmapFactory.decodeStream(byteArrayOutputStream.toByteArray().inputStream())
+                        byteArrayOutputStream.reset()
+
+                        withContext(Dispatchers.Main) {
+                            if (bitmap != null && running) {
+                                videoStreamView.setImageBitmap(bitmap)
+                                videoStreamView.rotation = -90f
+                            }
+                        }
+                    }
+                }
+                connection.disconnect()
+                handler.postDelayed({
+                    if (running) {
+                        startMJpegStream(url)
+                    }
+                }, 0)
+            } catch (e: IOException) {
+                e.printStackTrace()
+                Log.e("AccesoActivity", "Error en el stream: ${e.message}")
             }
-            // Listener para errores (OPCIONAL, pero recomendado)
-            videoStreamView.setOnErrorListener { mediaPlayer, what, extra ->
-                println("Error en VideoView: What: $what, Extra: $extra")
-                true // Indica que hemos manejado el error
-            }
-        }, 4000) // 4000 milisegundos = 4 segundos
+
+        }
+    }
+
+    private fun stopMJpegStream() {
+        running = false
     }
 }

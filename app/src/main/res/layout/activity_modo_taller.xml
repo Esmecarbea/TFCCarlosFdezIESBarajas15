@@ -12,6 +12,7 @@
         android:layout_height="0dp"
         android:scaleType="fitXY"
         android:src="@drawable/fondo_rejilla"
+        android:contentDescription=""
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -22,18 +23,17 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.19" />
+        app:layout_constraintGuide_percent="0.15" />
 
     <TextView
         android:id="@+id/texto_modo_taller"
-        android:layout_width="301dp"
-        android:layout_height="142dp"
+        android:layout_width="286dp"
+        android:layout_height="164dp"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         android:background="@drawable/marco_texto"
-        android:gravity="center_vertical"
+        android:gravity="center_vertical|center_horizontal"
         android:text="@string/texto_modo_taller"
-        android:textAlignment="center"
         android:textColor="@color/white"
         android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"

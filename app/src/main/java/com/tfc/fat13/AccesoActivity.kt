@@ -1,5 +1,6 @@
 package com.tfc.fat13
 
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.os.Handler
@@ -14,8 +15,19 @@ import com.airbnb.lottie.LottieAnimationView
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.opencv.android.Utils
+import org.opencv.core.Core
+import org.opencv.core.Mat
+import org.opencv.core.MatOfRect
+import org.opencv.core.Rect
+import org.opencv.core.Scalar
+import org.opencv.imgproc.Imgproc
+import org.opencv.objdetect.CascadeClassifier
 import java.io.ByteArrayOutputStream
+import java.io.File
+import java.io.FileOutputStream
 import java.io.IOException
+import java.io.InputStream
 import java.net.HttpURLConnection
 import java.net.URL
 
@@ -26,6 +38,8 @@ class AccesoActivity : AppCompatActivity() {
     private lateinit var videoStreamView: ImageView
     private val handler = Handler(Looper.getMainLooper())
     private var running = false
+    private lateinit var mJavaDetector: CascadeClassifier
+    private var absoluteFaceSize = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,6 +56,80 @@ class AccesoActivity : AppCompatActivity() {
             videoStreamView.visibility = View.VISIBLE
             startMJpegStream("http://192.168.1.163/stream")
         }, 4000)
+        // Cargar el clasificador Haar Cascade
+        loadClassifier()
+    }
+
+    private fun loadClassifier() {
+        try {
+            val inputStream: InputStream = resources.openRawResource(R.raw.haarcascade_frontalface_alt)
+            val cascadeDir: File = getDir("cascade", MODE_PRIVATE)
+            val mCascadeFile: File = File(cascadeDir, "haarcascade_frontalface_alt.xml")
+            val os: FileOutputStream = FileOutputStream(mCascadeFile)
+
+            val buffer = ByteArray(4096)
+            var bytesRead: Int
+            while (inputStream.read(buffer).also { bytesRead = it } != -1) {
+                os.write(buffer, 0, bytesRead)
+            }
+            inputStream.close()
+            os.close()
+
+            mJavaDetector = CascadeClassifier(mCascadeFile.absolutePath)
+            if (mJavaDetector.empty()) {
+                Log.e("AccesoActivity", "Failed to load cascade classifier")
+                mJavaDetector = CascadeClassifier()
+            } else {
+                Log.i("AccesoActivity", "Loaded cascade classifier from $mCascadeFile")
+            }
+            cascadeDir.delete()
+        } catch (e: IOException) {
+            e.printStackTrace()
+            Log.e("AccesoActivity", "Failed to load cascade. Exception thrown: $e")
+        }
+    }
+
+    private fun detectFaces(bitmap: Bitmap): Bitmap {
+        val imageMat = Mat()
+        val grayMat = Mat()
+        val faces = MatOfRect()
+
+        // Convertir el Bitmap a un Mat
+        Utils.bitmapToMat(bitmap, imageMat)
+
+        // Convertir la imagen a escala de grises
+        Imgproc.cvtColor(imageMat, grayMat, Imgproc.COLOR_BGR2GRAY)
+
+        // Calcular tamaño minimo para la detección
+        absoluteFaceSize = (grayMat.cols() * 0.2).toInt()
+
+        // Detectar caras
+        mJavaDetector.detectMultiScale(
+            grayMat,
+            faces,
+            1.1,
+            2,
+            2,
+            org.opencv.core.Size(absoluteFaceSize.toDouble(), absoluteFaceSize.toDouble()),
+            org.opencv.core.Size()
+        )
+
+        // Dibujar rectángulos alrededor de las caras
+        val facesArray = faces.toArray()
+        for (i in facesArray.indices) {
+            Core.rectangle(
+                imageMat,
+                facesArray[i].tl(),
+                facesArray[i].br(),
+                Scalar(0.0, 255.0, 0.0),
+                3
+            )
+        }
+        // Convertir el Mat de vuelta a Bitmap
+        val resultBitmap = Bitmap.createBitmap(bitmap.width, bitmap.height, Bitmap.Config.ARGB_8888)
+        Utils.matToBitmap(imageMat, resultBitmap)
+
+        return resultBitmap
     }
 
     override fun onPause() {
@@ -76,10 +164,14 @@ class AccesoActivity : AppCompatActivity() {
                         val bitmap =
                             BitmapFactory.decodeStream(byteArrayOutputStream.toByteArray().inputStream())
                         byteArrayOutputStream.reset()
+                        var bitmapConRostro :Bitmap?=null
 
+                        if (bitmap!=null) {
+                            bitmapConRostro = detectFaces(bitmap)
+                        }
                         withContext(Dispatchers.Main) {
-                            if (bitmap != null && running) {
-                                videoStreamView.setImageBitmap(bitmap)
+                            if (bitmapConRostro != null && running) {
+                                videoStreamView.setImageBitmap(bitmapConRostro)
                                 videoStreamView.rotation = -90f
                             }
                         }

@@ -10,6 +10,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        OpenCVLoader.initOpenCV(this)
+
         val botonAcceso: MaterialButton = findViewById(R.id.boton_acceso)
         val botonModoTaller: MaterialButton = findViewById(R.id.boton_modo_taller)
 

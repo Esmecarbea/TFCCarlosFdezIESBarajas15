@@ -16,10 +16,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.opencv.android.Utils
-import org.opencv.core.Core
 import org.opencv.core.Mat
 import org.opencv.core.MatOfRect
-import org.opencv.core.Rect
 import org.opencv.core.Scalar
 import org.opencv.imgproc.Imgproc
 import org.opencv.objdetect.CascadeClassifier
@@ -90,34 +88,40 @@ class AccesoActivity : AppCompatActivity() {
     }
 
     private fun detectFaces(bitmap: Bitmap): Bitmap {
+        Log.d("AccesoActivity", "detectFaces()")
         val imageMat = Mat()
         val grayMat = Mat()
         val faces = MatOfRect()
-
+        Log.d("AccesoActivity", "Antes Utils.bitmapToMat")
         // Convertir el Bitmap a un Mat
         Utils.bitmapToMat(bitmap, imageMat)
+        Log.d("AccesoActivity", "Despues Utils.bitmapToMat")
 
         // Convertir la imagen a escala de grises
+        Log.d("AccesoActivity", "Antes de Imgproc.cvtColor")
         Imgproc.cvtColor(imageMat, grayMat, Imgproc.COLOR_BGR2GRAY)
-
+        Log.d("AccesoActivity", "Despues de Imgproc.cvtColor")
         // Calcular tamaño minimo para la detección
-        absoluteFaceSize = (grayMat.cols() * 0.2).toInt()
+        absoluteFaceSize = (grayMat.rows() * 0.2).toInt()
+        Log.d("AccesoActivity", "absoluteFaceSize = " + absoluteFaceSize)
 
         // Detectar caras
+        Log.d("AccesoActivity", "Antes de mJavaDetector.detectMultiScale")
         mJavaDetector.detectMultiScale(
             grayMat,
             faces,
             1.1,
             2,
-            2,
+            0,
             org.opencv.core.Size(absoluteFaceSize.toDouble(), absoluteFaceSize.toDouble()),
             org.opencv.core.Size()
         )
-
+        Log.d("AccesoActivity", "Despues de mJavaDetector.detectMultiScale")
+        Log.d("AccesoActivity", "Hay " + faces.toArray().size + " caras")
         // Dibujar rectángulos alrededor de las caras
         val facesArray = faces.toArray()
         for (i in facesArray.indices) {
-            Core.rectangle(
+            Imgproc.rectangle(
                 imageMat,
                 facesArray[i].tl(),
                 facesArray[i].br(),
@@ -128,6 +132,7 @@ class AccesoActivity : AppCompatActivity() {
         // Convertir el Mat de vuelta a Bitmap
         val resultBitmap = Bitmap.createBitmap(bitmap.width, bitmap.height, Bitmap.Config.ARGB_8888)
         Utils.matToBitmap(imageMat, resultBitmap)
+        Log.d("AccesoActivity", "Fin detectFaces")
 
         return resultBitmap
     }
@@ -161,16 +166,20 @@ class AccesoActivity : AppCompatActivity() {
                     byteArrayOutputStream.write(buffer, 0, bytes)
 
                     if (byteArrayOutputStream.toString().contains("\r\n\r\n")) {
+
                         val bitmap =
                             BitmapFactory.decodeStream(byteArrayOutputStream.toByteArray().inputStream())
-                        byteArrayOutputStream.reset()
-                        var bitmapConRostro :Bitmap?=null
 
-                        if (bitmap!=null) {
+                        byteArrayOutputStream.reset()
+                        var bitmapConRostro: Bitmap? = null
+
+                        if (bitmap != null) {
                             bitmapConRostro = detectFaces(bitmap)
                         }
+
                         withContext(Dispatchers.Main) {
                             if (bitmapConRostro != null && running) {
+
                                 videoStreamView.setImageBitmap(bitmapConRostro)
                                 videoStreamView.rotation = -90f
                             }
@@ -190,7 +199,6 @@ class AccesoActivity : AppCompatActivity() {
 
         }
     }
-
     private fun stopMJpegStream() {
         running = false
     }

@@ -10,8 +10,8 @@
     <ImageView
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:contentDescription=""
         android:scaleType="fitXY"
+        tools:ignore="ContentDescription"
         android:src="@drawable/fondo_rejilla"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

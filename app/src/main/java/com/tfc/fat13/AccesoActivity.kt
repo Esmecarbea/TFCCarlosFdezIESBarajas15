@@ -27,6 +27,7 @@ import java.io.FileOutputStream
 import java.io.IOException
 import java.io.InputStream
 import java.net.HttpURLConnection
+import androidx.core.graphics.createBitmap //Añade esta linea
 import java.net.URL
 
 class AccesoActivity : AppCompatActivity() {
@@ -62,8 +63,8 @@ class AccesoActivity : AppCompatActivity() {
         try {
             val inputStream: InputStream = resources.openRawResource(R.raw.haarcascade_frontalface_alt)
             val cascadeDir: File = getDir("cascade", MODE_PRIVATE)
-            val mCascadeFile: File = File(cascadeDir, "haarcascade_frontalface_alt.xml")
-            val os: FileOutputStream = FileOutputStream(mCascadeFile)
+            val mCascadeFile = File(cascadeDir, "haarcascade_frontalface_alt.xml")
+            val os = FileOutputStream(mCascadeFile)
 
             val buffer = ByteArray(4096)
             var bytesRead: Int
@@ -103,8 +104,7 @@ class AccesoActivity : AppCompatActivity() {
         Log.d("AccesoActivity", "Despues de Imgproc.cvtColor")
         // Calcular tamaño minimo para la detección
         absoluteFaceSize = (grayMat.rows() * 0.2).toInt()
-        Log.d("AccesoActivity", "absoluteFaceSize = " + absoluteFaceSize)
-
+        Log.d("AccesoActivity", "absoluteFaceSize = $absoluteFaceSize")
         // Detectar caras
         Log.d("AccesoActivity", "Antes de mJavaDetector.detectMultiScale")
         mJavaDetector.detectMultiScale(
@@ -130,7 +130,7 @@ class AccesoActivity : AppCompatActivity() {
             )
         }
         // Convertir el Mat de vuelta a Bitmap
-        val resultBitmap = Bitmap.createBitmap(bitmap.width, bitmap.height, Bitmap.Config.ARGB_8888)
+        val resultBitmap = createBitmap(bitmap.width, bitmap.height, Bitmap.Config.ARGB_8888)
         Utils.matToBitmap(imageMat, resultBitmap)
         Log.d("AccesoActivity", "Fin detectFaces")
 
@@ -159,8 +159,8 @@ class AccesoActivity : AppCompatActivity() {
 
                 val inputStream = connection.inputStream
                 val buffer = ByteArray(1024)
-                var bytes: Int = 0
-                var byteArrayOutputStream = ByteArrayOutputStream()
+                var bytes = 0
+                val byteArrayOutputStream = ByteArrayOutputStream()
 
                 while (running && inputStream.read(buffer).also { bytes = it } != -1) {
                     byteArrayOutputStream.write(buffer, 0, bytes)

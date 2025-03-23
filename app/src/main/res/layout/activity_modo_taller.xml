@@ -11,14 +11,14 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:scaleType="fitXY"
-        tools:ignore="ContentDescription"
         android:src="@drawable/fondo_rejilla"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="0.0"
+        tools:ignore="ContentDescription" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline_center"
@@ -29,8 +29,8 @@
 
     <TextView
         android:id="@+id/texto_modo_taller"
-        android:layout_width="212dp"
-        android:layout_height="239dp"
+        android:layout_width="228dp"
+        android:layout_height="273dp"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         android:background="@drawable/marco_texto"
@@ -38,6 +38,9 @@
         android:text="@string/texto_modo_taller"
         android:textColor="@color/white"
         android:textSize="24sp"
+        android:contentDescription="@string/descripcion_modo_taller"
+        tools:ignore="SpeakableTextPresentCheck"
+        android:importantForAccessibility="yes"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/guideline_center" />
@@ -46,7 +49,7 @@
         android:id="@+id/boton_cancelar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="148dp"
+        android:layout_marginStart="88dp"
         android:backgroundTint="@color/red"
         android:paddingVertical="24dp"
         android:text="@string/cancelar"
@@ -55,13 +58,13 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/texto_modo_taller"
-        app:layout_constraintVertical_bias="0.135" />
+        app:layout_constraintVertical_bias="0.169" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/boton_confirmar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="144dp"
+        android:layout_marginEnd="88dp"
         android:backgroundTint="@color/green"
         android:paddingVertical="24dp"
         android:text="@string/confirmar"
@@ -69,6 +72,20 @@
         app:cornerRadius="500dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/texto_modo_taller" />
+        app:layout_constraintTop_toBottomOf="@+id/texto_modo_taller"
+        app:layout_constraintVertical_bias="0.169" />
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/boton_desactivar"
+        android:layout_width="150dp"
+        android:layout_height="80dp"
+        android:text="DESACTIVAR"
+        android:textColor="@color/white"
+        app:backgroundTint="@color/red"
+        android:visibility="gone"
+        app:cornerRadius="40dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

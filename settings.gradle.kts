@@ -19,6 +19,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "FaT13"
+rootProject.name = "FaT14"
 include(":app")
  

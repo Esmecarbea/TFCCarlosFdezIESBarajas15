@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace = "com.tfc.fat13"
+    namespace = "com.tfc.fat14"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.tfc.fat13"
+        applicationId = "com.tfc.fat14"
         minSdk = 26
         targetSdk = 35
         versionCode = 1

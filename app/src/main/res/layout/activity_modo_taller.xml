@@ -8,16 +8,15 @@
     tools:context=".ModoTallerActivity">
 
     <ImageView
+        android:id="@+id/imageView"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:scaleType="fitXY"
         android:src="@drawable/fondo_rejilla"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0"
         tools:ignore="ContentDescription" />
 
     <androidx.constraintlayout.widget.Guideline
@@ -29,55 +28,62 @@
 
     <TextView
         android:id="@+id/texto_modo_taller"
-        android:layout_width="228dp"
+        android:layout_width="240dp"
         android:layout_height="273dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
         android:background="@drawable/marco_texto"
-        android:gravity="center_vertical|center_horizontal"
+        android:contentDescription="@string/descripcion_modo_taller"
+        android:gravity="center"
+        android:importantForAccessibility="yes"
         android:text="@string/texto_modo_taller"
         android:textColor="@color/white"
         android:textSize="24sp"
-        android:contentDescription="@string/descripcion_modo_taller"
-        tools:ignore="SpeakableTextPresentCheck"
-        android:importantForAccessibility="yes"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/guideline_center" />
+        app:layout_constraintTop_toTopOf="@+id/guideline_center"
+        tools:ignore="SpeakableTextPresentCheck" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrier"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="top"
+        app:constraint_referenced_ids="texto_modo_taller"/>
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/boton_cancelar"
-        android:layout_width="wrap_content"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="140dp"
         android:backgroundTint="@color/red"
         android:paddingVertical="24dp"
         android:text="@string/cancelar"
         android:textColor="@color/white"
         app:cornerRadius="500dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginTop="24dp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/texto_modo_taller"
-        app:layout_constraintVertical_bias="0.512" />
+        app:layout_constraintTop_toBottomOf="@+id/barrier"
+        app:layout_constraintBottom_toTopOf="@+id/boton_confirmar"
+        app:layout_constraintVertical_chainStyle="packed" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/boton_confirmar"
-        android:layout_width="wrap_content"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="124dp"
         android:backgroundTint="@color/green"
         android:paddingVertical="24dp"
         android:text="@string/confirmar"
         android:textColor="@color/white"
         app:cornerRadius="500dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginTop="24dp"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/texto_modo_taller"
-        app:layout_constraintVertical_bias="0.128" />
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/boton_cancelar" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/boton_desactivar"
-        android:layout_width="150dp"
+        android:layout_width="200dp"
         android:layout_height="80dp"
         android:text="DESACTIVAR"
         android:textColor="@color/white"

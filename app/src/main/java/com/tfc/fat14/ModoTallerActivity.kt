@@ -11,13 +11,8 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.google.android.material.button.MaterialButton
-import okhttp3.Response
-import okhttp3.WebSocket
-import okhttp3.WebSocketListener
-import okio.ByteString
 
 class ModoTallerActivity : AppCompatActivity() {
-    private lateinit var webSocketManager: WebSocketManager
     private lateinit var colorAnim: ObjectAnimator
     private lateinit var textoModoTaller: TextView
     private var anim: ObjectAnimator? = null
@@ -25,37 +20,6 @@ class ModoTallerActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_modo_taller)
-
-        // Crear un WebSocketListener
-        val listener = object : WebSocketListener() {
-            override fun onOpen(webSocket: WebSocket, response: Response) {
-                Log.d("WebSocket", "Conexión abierta")
-            }
-
-            override fun onMessage(webSocket: WebSocket, text: String) {
-                Log.d("WebSocket", "Mensaje recibido: $text")
-            }
-
-            override fun onMessage(webSocket: WebSocket, bytes: ByteString) {
-                Log.d("WebSocket", "Mensaje binario recibido: $bytes")
-            }
-
-            override fun onClosing(webSocket: WebSocket, code: Int, reason: String) {
-                Log.d("WebSocket", "Conexión cerrándose: $code, $reason")
-            }
-
-            override fun onClosed(webSocket: WebSocket, code: Int, reason: String) {
-                Log.d("WebSocket", "Conexión cerrada: $code, $reason")
-            }
-
-            override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
-                Log.e("WebSocket", "Error: ${t.message}")
-            }
-        }
-
-        // Inicializar el WebSocketManager
-        webSocketManager = WebSocketManager(listener)
-        webSocketManager.connect()
 
         // Referencias a los elementos de la UI
         textoModoTaller = findViewById(R.id.texto_modo_taller)
@@ -72,13 +36,13 @@ class ModoTallerActivity : AppCompatActivity() {
 
         // Listener del botón Confirmar
         botonConfirmar.setOnClickListener {
-            webSocketManager.sendMessage("MODO_TALLER_ACTIVADO")
+            MainActivity.webSocketManager.sendMessage("MODO_TALLER_ACTIVADO")
             Log.d("WebSocket", "Enviado: MODO_TALLER_ACTIVADO")
 
             colorAnim.end()
             anim?.end()
 
-            textoModoTaller.text = "MODO TALLER ACTIVADO"
+            textoModoTaller.setText(R.string.modo_taller_activado) // Usamos el recurso de strings.xml
             textoModoTaller.setTextColor(ContextCompat.getColor(this, R.color.new_red))
 
             anim = ObjectAnimator.ofFloat(textoModoTaller, View.ALPHA, 0.0f, 1.0f).apply {
@@ -95,7 +59,7 @@ class ModoTallerActivity : AppCompatActivity() {
 
         // Listener del botón Desactivar
         botonDesactivar.setOnClickListener {
-            webSocketManager.sendMessage("MODO_TALLER_DESACTIVADO")
+            MainActivity.webSocketManager.sendMessage("MODO_TALLER_DESACTIVADO")
             Log.d("WebSocket", "Enviado: MODO_TALLER_DESACTIVADO")
 
             textoModoTaller.text = getString(R.string.texto_modo_taller)
@@ -122,10 +86,9 @@ class ModoTallerActivity : AppCompatActivity() {
             start()
         }
     }
-//prueba:qw
+
     override fun onDestroy() {
         super.onDestroy()
-        webSocketManager.close()
         colorAnim.end()
         anim?.end()
     }

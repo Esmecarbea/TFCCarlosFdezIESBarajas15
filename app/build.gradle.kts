@@ -37,6 +37,7 @@ android {
 }
 
 dependencies {
+    implementation ("tech.gusavila92:java-android-websocket-client:1.2.2")
     implementation("com.squareup.okhttp3:okhttp:4.11.0")
     implementation("org.opencv:opencv:4.11.0")
     implementation("androidx.core:core-ktx:1.15.0")

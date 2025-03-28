@@ -8,5 +8,6 @@
     <string name="icono_central_description">Icono Central</string>
     <string name="boton_acceso">Acceso</string>
     <string name="boton_modo_taller">Modo Taller</string>
+    <string name="modo_taller_activado">MODO TALLER ACTIVADO</string>
     <string name="descripcion_modo_taller">Texto informativo del modo taller</string>
 </resources>

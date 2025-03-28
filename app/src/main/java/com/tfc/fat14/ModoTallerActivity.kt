@@ -122,7 +122,7 @@ class ModoTallerActivity : AppCompatActivity() {
             start()
         }
     }
-
+//prueba
     override fun onDestroy() {
         super.onDestroy()
         webSocketManager.close()

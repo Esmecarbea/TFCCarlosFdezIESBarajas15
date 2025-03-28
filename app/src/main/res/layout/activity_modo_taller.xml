@@ -49,7 +49,7 @@
         android:id="@+id/boton_cancelar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="88dp"
+        android:layout_marginStart="140dp"
         android:backgroundTint="@color/red"
         android:paddingVertical="24dp"
         android:text="@string/cancelar"
@@ -58,13 +58,13 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/texto_modo_taller"
-        app:layout_constraintVertical_bias="0.169" />
+        app:layout_constraintVertical_bias="0.512" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/boton_confirmar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="88dp"
+        android:layout_marginEnd="124dp"
         android:backgroundTint="@color/green"
         android:paddingVertical="24dp"
         android:text="@string/confirmar"
@@ -73,7 +73,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/texto_modo_taller"
-        app:layout_constraintVertical_bias="0.169" />
+        app:layout_constraintVertical_bias="0.128" />
+
     <com.google.android.material.button.MaterialButton
         android:id="@+id/boton_desactivar"
         android:layout_width="150dp"

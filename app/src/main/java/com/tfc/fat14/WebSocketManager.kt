@@ -12,7 +12,7 @@ class WebSocketManager(private val listener: WebSocketListener) {
     private val client: OkHttpClient = OkHttpClient.Builder()
         .readTimeout(0, TimeUnit.MILLISECONDS) // Sin timeout para mantener la conexión viva
         .build()
-    private val wsUrl = "ws://192.168.1.188:81/ws" // Ajusta esta IP según el ESP32-S3
+    private val wsUrl = "ws://192.168.1.188:82/ws" // Ajusta esta IP según el ESP32-S3
 
     fun connect() {
         val request = Request.Builder().url(wsUrl).build()

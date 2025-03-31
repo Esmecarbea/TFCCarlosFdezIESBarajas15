@@ -7,80 +7,87 @@
     android:background="@drawable/background_gradient"
     tools:context=".AccesoActivity">
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline_top_third"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.5" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline_bottom_half"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.5" />
-
+    <!-- Fondo -->
     <ImageView
+        android:id="@+id/imageViewFondo"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:scaleType="fitXY"
         android:src="@drawable/fondo_rejilla"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
+        tools:ignore="ContentDescription" />
 
-    <ImageView
+    <!-- WebView para el Stream -->
+    <WebView
+        android:id="@+id/web_view_stream"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:scaleType="fitXY"
-        android:src="@drawable/fondo_rejilla"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <ImageView
-        android:id="@+id/video_stream_view"
-        android:layout_width="184dp"
-        android:layout_height="177dp"
         android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@+id/guideline_top_third"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintDimensionRatio="4:3"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.619" />
+        app:layout_constraintVertical_bias="0.3"
+        app:layout_constraintWidth_percent="0.8" />
 
+    <!-- Botón Registrar Cara -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/boton_registrar_cara"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="@string/registrar_cara"
+        app:layout_constraintEnd_toStartOf="@+id/boton_gestionar_caras"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/web_view_stream"
+        android:visibility="gone"/>
+
+    <!-- Botón Gestionar Caras -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/boton_gestionar_caras"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="24dp"
+        android:text="@string/gestionar_caras"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/boton_registrar_cara"
+        app:layout_constraintTop_toBottomOf="@id/web_view_stream"
+        android:visibility="gone"/>
+
+    <!-- Animación Lottie -->
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/lottie_esperando_camara"
         android:layout_width="169dp"
         android:layout_height="175dp"
         android:visibility="visible"
-        app:layout_constraintBottom_toBottomOf="@+id/guideline_top_third"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.495"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.612"
+        app:layout_constraintBottom_toBottomOf="@+id/web_view_stream"
+        app:layout_constraintEnd_toEndOf="@+id/web_view_stream"
+        app:layout_constraintStart_toStartOf="@+id/web_view_stream"
+        app:layout_constraintTop_toTopOf="@+id/web_view_stream"
         app:lottie_autoPlay="true"
         app:lottie_loop="true"
         app:lottie_rawRes="@raw/scanface" />
 
+    <!-- Texto Esperando -->
     <TextView
         android:id="@+id/texto_esperando_camara"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="108dp"
-        android:text="Esperando Cámara"
+        android:layout_marginTop="24dp"
+        android:text="@string/esperando_camara"
         android:textColor="@android:color/white"
         android:textSize="20sp"
         android:visibility="visible"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/lottie_esperando_camara"
+        app:layout_constraintStart_toStartOf="@+id/lottie_esperando_camara"
         app:layout_constraintTop_toBottomOf="@+id/lottie_esperando_camara" />
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

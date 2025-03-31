@@ -1,13 +1,16 @@
 <resources>
-    <string name="app_name">FaT13</string>
-    <string name="acceso">Acceso</string>
-    <string name="modo_taller">Modo Taller</string>
-    <string name="texto_modo_taller">VAS A AUTORIZAR QUE CUALQUIER PERSONA PUEDA ARRANCAR TU COCHE</string>
-    <string name="cancelar">Cancelar</string>
-    <string name="confirmar">Confirmar</string>
-    <string name="icono_central_description">Icono Central</string>
-    <string name="boton_acceso">Acceso</string>
-    <string name="boton_modo_taller">Modo Taller</string>
+    <string name="app_name">FaT14</string>
+    <string name="boton_acceso">ACCESO</string>
+    <string name="boton_modo_taller">MODO TALLER</string>
+    <string name="icono_central_description">Icono seguridad coche</string>
+    <string name="texto_modo_taller">¿Desea activar el MODO TALLER? Esto permitirá arrancar el vehículo sin reconocimiento facial.</string>
+    <string name="cancelar">CANCELAR</string>
+    <string name="confirmar">CONFIRMAR</string>
     <string name="modo_taller_activado">MODO TALLER ACTIVADO</string>
-    <string name="descripcion_modo_taller">Texto informativo del modo taller</string>
+    <string name="desactivar">DESACTIVAR</string>
+    <string name="salir">SALIR</string> <!-- NUEVO -->
+    <string name="descripcion_modo_taller">Texto explicativo modo taller</string>
+    <string name="esperando_camara">Esperando Cámara</string>
+    <string name="registrar_cara">Registrar Cara</string>
+    <string name="gestionar_caras">Gestionar Caras</string>
 </resources>

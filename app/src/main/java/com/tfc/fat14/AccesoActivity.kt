@@ -2,6 +2,8 @@ package com.tfc.fat14
 
 import android.graphics.Bitmap
 import android.os.Bundle
+import android.webkit.WebView
+import android.webkit.WebViewClient
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
@@ -24,139 +26,107 @@ import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 import java.io.InputStream
+import com.google.android.material.button.MaterialButton
 
 class AccesoActivity : AppCompatActivity() {
 
+    // --- Variables Miembro ---
     private lateinit var lottieEsperandoCamara: LottieAnimationView
     private lateinit var textoEsperandoCamara: TextView
-    private lateinit var videoStreamView: ImageView
-    private lateinit var mJavaDetector: CascadeClassifier
-    private var absoluteFaceSize = 0
-    private lateinit var webSocketManager: WebSocketManager
+    private lateinit var webViewStream: WebView
+    // private lateinit var mJavaDetector: CascadeClassifier // Comentado si no se usa OpenCV
+    // private var absoluteFaceSize = 0                  // Comentado si no se usa OpenCV
+    // private lateinit var webSocketManager: WebSocketManager // Comentado si WS se maneja en MainActivity
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_acceso)
+        setContentView(R.layout.activity_acceso) // Establece el layout XML
 
+        // --- Referencias a Vistas ---
         lottieEsperandoCamara = findViewById(R.id.lottie_esperando_camara)
         textoEsperandoCamara = findViewById(R.id.texto_esperando_camara)
-        videoStreamView = findViewById(R.id.video_stream_view)
+        webViewStream = findViewById(R.id.web_view_stream)
+        // Obtener referencias a los botones nuevos AHORA
+        val botonRegistrarCara = findViewById<MaterialButton>(R.id.boton_registrar_cara)
+        val botonGestionarCaras = findViewById<MaterialButton>(R.id.boton_gestionar_caras)
 
-        Handler(Looper.getMainLooper()).postDelayed({
-            Log.d("AccesoActivity", "Entrando en postDelayed")
-            lottieEsperandoCamara.visibility = View.GONE
-            textoEsperandoCamara.visibility = View.GONE
-            videoStreamView.visibility = View.VISIBLE
-        }, 4000)
 
-        // Cargar el clasificador Haar Cascade
-        loadClassifier()
-        // Inicializar WebSocketManager
-        val myWebSocketListener = MyWebSocketListener() // Clase interna.
-        webSocketManager = WebSocketManager(myWebSocketListener) //Instancia
-        webSocketManager.connect() // Conectar
-    }
-
-    private fun loadClassifier() {
+        // --- Configuración y Carga del WebView ---
         try {
-            val inputStream: InputStream = resources.openRawResource(R.raw.haarcascade_frontalface_alt)
-            val cascadeDir: File = getDir("cascade", MODE_PRIVATE)
-            val mCascadeFile = File(cascadeDir, "haarcascade_frontalface_alt.xml")
-            val os = FileOutputStream(mCascadeFile)
+            webViewStream.settings.javaScriptEnabled = true
+            webViewStream.settings.loadWithOverviewMode = true
+            webViewStream.settings.useWideViewPort = true
+            webViewStream.settings.builtInZoomControls = false
+            webViewStream.settings.displayZoomControls = false
+            webViewStream.webViewClient = WebViewClient()
 
-            val buffer = ByteArray(4096)
-            var bytesRead: Int
-            while (inputStream.read(buffer).also { bytesRead = it } != -1) {
-                os.write(buffer, 0, bytesRead)
+            val esp32Ip = "192.168.1.188" // <-- REVISA TU IP
+            val streamUrl = "http://${esp32Ip}:81/stream"
+
+            Log.d("AccesoActivity", "Cargando stream desde: $streamUrl")
+            webViewStream.loadUrl(streamUrl)
+
+        } catch (e: Exception) {
+            Log.e("AccesoActivity", "Error configurando o cargando WebView: ${e.message}")
+            textoEsperandoCamara.text = "Error al cargar vídeo" // Mostrar error
+            textoEsperandoCamara.visibility = View.VISIBLE
+            lottieEsperandoCamara.visibility = View.GONE
+            webViewStream.visibility = View.GONE
+            // Ocultar también los botones si falla la carga del vídeo
+            botonRegistrarCara.visibility = View.GONE
+            botonGestionarCaras.visibility = View.GONE
+        }
+
+
+        // --- Visibilidad Inicial y Retardo ---
+        // Asegurarse de que los botones también empiezan ocultos si no hubo error
+        if (webViewStream.visibility != View.GONE) { // Si no falló la carga
+            webViewStream.visibility = View.GONE
+            botonRegistrarCara.visibility = View.GONE
+            botonGestionarCaras.visibility = View.GONE
+        }
+        lottieEsperandoCamara.visibility = View.VISIBLE
+        textoEsperandoCamara.visibility = View.VISIBLE
+        textoEsperandoCamara.text = getString(R.string.esperando_camara)
+
+
+        // Retardo para mostrar WebView y botones
+        Handler(Looper.getMainLooper()).postDelayed({
+            Log.d("AccesoActivity", "Mostrando WebView y botones...")
+            // Solo mostrar si no hubo error
+            if (textoEsperandoCamara.text.toString() == getString(R.string.esperando_camara)) {
+                lottieEsperandoCamara.visibility = View.GONE
+                textoEsperandoCamara.visibility = View.GONE
+                webViewStream.visibility = View.VISIBLE
+                botonRegistrarCara.visibility = View.VISIBLE
+                botonGestionarCaras.visibility = View.VISIBLE
             }
-            inputStream.close()
-            os.close()
+        }, 4000) // 4 segundos
 
-            mJavaDetector = CascadeClassifier(mCascadeFile.absolutePath)
-            if (mJavaDetector.empty()) {
-                Log.e("AccesoActivity", "Failed to load cascade classifier")
-                mJavaDetector = CascadeClassifier()
-            } else {
-                Log.i("AccesoActivity", "Loaded cascade classifier from $mCascadeFile")
-            }
-            cascadeDir.delete()
-        } catch (e: IOException) {
-            e.printStackTrace()
-            Log.e("AccesoActivity", "Failed to load cascade. Exception thrown: $e")
-        }
-    }
 
-    private fun detectFaces(bitmap: Bitmap): Bitmap {
-        Log.d("AccesoActivity", "detectFaces()")
-        val imageMat = Mat()
-        val grayMat = Mat()
-        val faces = MatOfRect()
-        Utils.bitmapToMat(bitmap, imageMat)
-        Imgproc.cvtColor(imageMat, grayMat, Imgproc.COLOR_BGR2GRAY)
-        absoluteFaceSize = (grayMat.rows() * 0.2).toInt()
-        mJavaDetector.detectMultiScale(
-            grayMat,
-            faces,
-            1.1,
-            2,
-            0,
-            org.opencv.core.Size(absoluteFaceSize.toDouble(), absoluteFaceSize.toDouble()),
-            org.opencv.core.Size()
-        )
-        Log.d("AccesoActivity", "Hay " + faces.toArray().size + " caras")
-        val facesArray = faces.toArray()
-        for (i in facesArray.indices) {
-            Imgproc.rectangle(
-                imageMat,
-                facesArray[i].tl(),
-                facesArray[i].br(),
-                Scalar(0.0, 255.0, 0.0),
-                3
-            )
-        }
-        val resultBitmap = createBitmap(bitmap.width, bitmap.height, Bitmap.Config.ARGB_8888)
-        Utils.matToBitmap(imageMat, resultBitmap)
-        Log.d("AccesoActivity", "Fin detectFaces")
+        // --- WebSocket (Comentado por ahora) ---
+        /*
+        val myWebSocketListener = MyWebSocketListener()
+        val wsUrl = "ws://${esp32Ip}:82/ws" // Puerto 82 para WS
+        webSocketManager = WebSocketManager(myWebSocketListener, wsUrl )
+        webSocketManager.connect()
+        */
 
-        return resultBitmap
-    }
-    //Clase Interna
-    inner class MyWebSocketListener : WebSocketListener() {
-        override fun onOpen(webSocket: WebSocket, response: Response) {
-            super.onOpen(webSocket, response)
-            Log.d("AccesoActivity", "Conexion onOpen")
-            //TODO: Enviar mensaje inicial.
-        }
+        // --- Clasificador OpenCV (Comentado) ---
+        // loadClassifier()
 
-        override fun onMessage(webSocket: WebSocket, text: String) {
-            super.onMessage(webSocket, text)
-            Log.d("AccesoActivity", "Conexion onMessage: $text")
-            //TODO: Recibir datos JSON.
-        }
-        override fun onClosing(webSocket: WebSocket, code: Int, reason: String) {
-            super.onClosing(webSocket, code, reason)
-            Log.d("AccesoActivity", "Cerrando conexión: $code $reason")
-        }
+    } // <-- Fin de onCreate
 
-        override fun onClosed(webSocket: WebSocket, code: Int, reason: String) {
-            super.onClosed(webSocket, code, reason)
-            Log.d("AccesoActivity", "Conexión cerrada: $code $reason")
-        }
 
-        override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
-            super.onFailure(webSocket, t, response)
-            Log.e("AccesoActivity", "Error: ${t.message}")
-            t.printStackTrace()
-        }
-    }
+    // --- OTRAS FUNCIONES (Comentadas si no se usan) ---
+    /*
+    private fun loadClassifier() { ... }
+    private fun detectFaces(bitmap: Bitmap): Bitmap { ... }
+    inner class MyWebSocketListener : WebSocketListener() { ... }
+    override fun onDestroy() { ... }
+    override fun onPause() { ... }
+     override fun onResume() { ... }
+     */
 
-    override fun onDestroy() {
-        super.onDestroy()
-        webSocketManager.close()
-    }
-
-    override fun onPause() {
-        super.onPause()
-        webSocketManager.close()
-    }
 }

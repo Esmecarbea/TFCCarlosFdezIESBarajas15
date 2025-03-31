@@ -28,8 +28,8 @@
 
     <TextView
         android:id="@+id/texto_modo_taller"
-        android:layout_width="240dp"
-        android:layout_height="273dp"
+        android:layout_width="281dp"
+        android:layout_height="233dp"
         android:background="@drawable/marco_texto"
         android:contentDescription="@string/descripcion_modo_taller"
         android:gravity="center"
@@ -42,27 +42,70 @@
         app:layout_constraintTop_toTopOf="@+id/guideline_center"
         tools:ignore="SpeakableTextPresentCheck" />
 
+    <!-- Barrier ya no es necesaria si posicionamos botones respecto al texto -->
+    <!--
     <androidx.constraintlayout.widget.Barrier
         android:id="@+id/barrier"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:barrierDirection="top"
         app:constraint_referenced_ids="texto_modo_taller"/>
+     -->
+
+    <!-- Botón Desactivar -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/boton_desactivar"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:paddingVertical="24dp"
+        android:text="@string/desactivar"
+        android:textColor="@color/white"
+        app:backgroundTint="@color/red"
+        android:visibility="gone"
+        app:cornerRadius="500dp"
+        app:layout_constraintTop_toBottomOf="@+id/texto_modo_taller"
+        app:layout_constraintBottom_toTopOf="@+id/boton_salir_taller"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintVertical_chainStyle="packed"
+        android:layout_marginTop="32dp"/>
+
+    <!-- NUEVO BOTÓN SALIR -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/boton_salir_taller"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:paddingVertical="24dp"
+        android:text="@string/salir"
+        android:textColor="@color/white"
+        app:backgroundTint="@color/grey"
+        android:visibility="gone"
+        app:cornerRadius="500dp"
+        app:layout_constraintTop_toBottomOf="@+id/boton_desactivar"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="32dp"/>
+
+    <!-- Botones originales -->
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/boton_cancelar"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
         android:backgroundTint="@color/red"
         android:paddingVertical="24dp"
         android:text="@string/cancelar"
         android:textColor="@color/white"
+        android:visibility="visible"
         app:cornerRadius="500dp"
-        android:layout_marginTop="24dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/barrier"
         app:layout_constraintBottom_toTopOf="@+id/boton_confirmar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/texto_modo_taller"
         app:layout_constraintVertical_chainStyle="packed" />
 
     <com.google.android.material.button.MaterialButton
@@ -74,25 +117,12 @@
         android:text="@string/confirmar"
         android:textColor="@color/white"
         app:cornerRadius="500dp"
-        android:layout_marginTop="24dp"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/boton_cancelar" />
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/boton_desactivar"
-        android:layout_width="200dp"
-        android:layout_height="80dp"
-        android:text="DESACTIVAR"
-        android:textColor="@color/white"
-        app:backgroundTint="@color/red"
-        android:visibility="gone"
-        app:cornerRadius="40dp"
+        android:layout_marginTop="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/boton_cancelar"
+        android:layout_marginBottom="32dp"
+        android:visibility="visible"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

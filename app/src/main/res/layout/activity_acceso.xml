@@ -34,31 +34,49 @@
         app:layout_constraintVertical_bias="0.3"
         app:layout_constraintWidth_percent="0.8" />
 
-    <!-- Botón Registrar Cara -->
+    <!-- Botón Registrar Usuario -->
     <com.google.android.material.button.MaterialButton
         android:id="@+id/boton_registrar_cara"
-        android:layout_width="wrap_content"
+        android:layout_width="250dp"
         android:layout_height="wrap_content"
+        android:paddingVertical="18dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
         android:layout_marginTop="24dp"
         android:text="@string/registrar_cara"
-        app:layout_constraintEnd_toStartOf="@+id/boton_gestionar_caras"
-        app:layout_constraintHorizontal_chainStyle="packed"
-        app:layout_constraintStart_toStartOf="parent"
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        app:backgroundTint="@color/green"
+        app:cornerRadius="500dp"
+        app:icon="@android:drawable/ic_menu_add"
+        android:visibility="gone"
         app:layout_constraintTop_toBottomOf="@id/web_view_stream"
-        android:visibility="gone"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/boton_gestionar_caras"
+        app:layout_constraintVertical_chainStyle="packed" />
 
-    <!-- Botón Gestionar Caras -->
+    <!-- Botón Gestionar Usuarios -->
     <com.google.android.material.button.MaterialButton
         android:id="@+id/boton_gestionar_caras"
-        android:layout_width="wrap_content"
+        android:layout_width="250dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="24dp"
+        android:paddingVertical="18dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginTop="16dp"
         android:text="@string/gestionar_caras"
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        app:backgroundTint="@color/green"
+        app:cornerRadius="500dp"
+        app:icon="@android:drawable/ic_menu_manage"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/boton_registrar_cara"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/boton_registrar_cara"
-        app:layout_constraintTop_toBottomOf="@id/web_view_stream"
-        android:visibility="gone"/>
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="32dp" />
 
     <!-- Animación Lottie -->
     <com.airbnb.lottie.LottieAnimationView

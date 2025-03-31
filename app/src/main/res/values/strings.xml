@@ -11,6 +11,6 @@
     <string name="salir">SALIR</string> <!-- NUEVO -->
     <string name="descripcion_modo_taller">Texto explicativo modo taller</string>
     <string name="esperando_camara">Esperando Cámara</string>
-    <string name="registrar_cara">Registrar Cara</string>
-    <string name="gestionar_caras">Gestionar Caras</string>
+    <string name="registrar_cara">Registrar Usuario</string>
+    <string name="gestionar_caras">Gestionar Usuarios</string>
 </resources>

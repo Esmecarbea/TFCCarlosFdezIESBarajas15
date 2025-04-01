@@ -47,7 +47,7 @@ class ModoTallerActivity : AppCompatActivity() {
         botonConfirmar.setOnClickListener {
             // Verificar si el WebSocketManager está listo antes de enviar
             // Enviar mensaje directamente (sin verificar isConnected por ahora)
-            MainActivity.webSocketManager.sendMessage("MODO_TALLER_ACTIVADO")
+            MainActivity.webSocketManager?.sendMessage("MODO_TALLER_ACTIVADO")
             Log.d("WebSocket", "Enviado: MODO_TALLER_ACTIVADO")
 
 
@@ -79,7 +79,7 @@ class ModoTallerActivity : AppCompatActivity() {
         // Listener del botón Desactivar
         botonDesactivar.setOnClickListener {
             // Enviar mensaje directamente (sin verificar isConnected por ahora)
-            MainActivity.webSocketManager.sendMessage("MODO_TALLER_DESACTIVADO")
+            MainActivity.webSocketManager?.sendMessage("MODO_TALLER_DESACTIVADO")
             Log.d("WebSocket", "Enviado: MODO_TALLER_DESACTIVADO")
 
             // --- Gestión UI ---

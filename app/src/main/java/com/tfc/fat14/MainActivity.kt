@@ -3,65 +3,43 @@ package com.tfc.fat14
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.button.MaterialButton
 import okhttp3.Response
 import okhttp3.WebSocket
 import okhttp3.WebSocketListener
-import okio.ByteString
-import org.opencv.android.OpenCVLoader
 
 class MainActivity : AppCompatActivity() {
+
     companion object {
-        lateinit var webSocketManager: WebSocketManager // Variable para usar el WebSocket en otras actividades
+        var webSocketManager: WebSocketManager? = null
     }
+
+    private lateinit var botonIrAcceso: MaterialButton
+    private lateinit var botonModoTaller: MaterialButton
+    private lateinit var textoEstadoSistema: TextView
+    private lateinit var textoConexionWs: TextView
+    private lateinit var myWebSocketListener: MyWebSocketListener
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        if (!OpenCVLoader.initLocal()) {
-            // Handle initialization error
-            Log.e("OpenCV", "Error initializing OpenCV")
-        } else {
-            Log.d("OpenCV", "OpenCV initialized successfully")
-        }
+        botonIrAcceso = findViewById(R.id.boton_ir_acceso)
+        botonModoTaller = findViewById(R.id.boton_modo_taller)
+        textoEstadoSistema = findViewById(R.id.texto_estado_sistema)
+        textoConexionWs = findViewById(R.id.texto_conexion_ws)
+        myWebSocketListener = MyWebSocketListener()
 
-        // Crear un WebSocketListener
-        val listener = object : WebSocketListener() {
-            override fun onOpen(webSocket: WebSocket, response: Response) {
-                Log.d("WebSocket", "Conexión abierta")
-            }
+        // Inicializar y conectar WebSocket
+        MainActivity.webSocketManager = WebSocketManager()
+        MainActivity.webSocketManager?.connect(myWebSocketListener)
 
-            override fun onMessage(webSocket: WebSocket, text: String) {
-                Log.d("WebSocket", "Mensaje recibido: $text")
-            }
+        textoEstadoSistema.text = "Estado: Desconocido"
+        textoConexionWs.text = "WS: Conectando..."
 
-            override fun onMessage(webSocket: WebSocket, bytes: ByteString) {
-                Log.d("WebSocket", "Mensaje binario recibido: $bytes")
-            }
-
-            override fun onClosing(webSocket: WebSocket, code: Int, reason: String) {
-                Log.d("WebSocket", "Conexión cerrándose: $code, $reason")
-            }
-
-            override fun onClosed(webSocket: WebSocket, code: Int, reason: String) {
-                Log.d("WebSocket", "Conexión cerrada: $code, $reason")
-            }
-
-            override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
-                Log.e("WebSocket", "Error: ${t.message}")
-            }
-        }
-
-        // Inicializar el WebSocketManager
-        webSocketManager = WebSocketManager(listener)
-        webSocketManager.connect()
-
-        val botonAcceso: MaterialButton = findViewById(R.id.boton_acceso)
-        val botonModoTaller: MaterialButton = findViewById(R.id.boton_modo_taller)
-
-        botonAcceso.setOnClickListener {
+        botonIrAcceso.setOnClickListener {
             val intent = Intent(this, AccesoActivity::class.java)
             startActivity(intent)
         }
@@ -74,6 +52,42 @@ class MainActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        webSocketManager.close()
+        MainActivity.webSocketManager?.close()
+        Log.d("MainActivity", "WebSocket cerrado desde onDestroy")
+    }
+
+    inner class MyWebSocketListener : WebSocketListener() {
+        override fun onOpen(webSocket: WebSocket, response: Response) {
+            runOnUiThread {
+                textoConexionWs.text = "WS: Conectado"
+                Log.d("MainActivity", "WebSocket Conectado")
+            }
+        }
+
+        override fun onMessage(webSocket: WebSocket, text: String) {
+            runOnUiThread {
+                Log.d("MainActivity", "Mensaje WS recibido: $text")
+                when (text) {
+                    "ESTADO:TALLER_ACTIVO" -> textoEstadoSistema.text = "Modo Taller: ACTIVADO"
+                    "ESTADO:NORMAL_RELE_ON" -> textoEstadoSistema.text = "Modo Normal: Relé ON"
+                    "ESTADO:NORMAL_RELE_OFF" -> textoEstadoSistema.text = "Modo Normal: Relé OFF"
+                    else -> Log.w("MainActivity", "Mensaje WS no manejado aquí: $text")
+                }
+            }
+        }
+
+        override fun onClosing(webSocket: WebSocket, code: Int, reason: String) {
+            runOnUiThread {
+                textoConexionWs.text = "WS: Cerrando..."
+                Log.d("MainActivity", "WebSocket cerrando: $code / $reason")
+            }
+        }
+
+        override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
+            runOnUiThread {
+                textoConexionWs.text = "WS: Error"
+                Log.e("MainActivity", "WebSocket Error: ${t.message}", t)
+            }
+        }
     }
 }

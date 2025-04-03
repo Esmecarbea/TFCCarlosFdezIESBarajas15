@@ -32,9 +32,11 @@ class MainActivity : AppCompatActivity() {
         textoConexionWs = findViewById(R.id.texto_conexion_ws)
         myWebSocketListener = MyWebSocketListener()
 
-        // Inicializar y conectar WebSocket
-        MainActivity.webSocketManager = WebSocketManager()
-        MainActivity.webSocketManager?.connect(myWebSocketListener)
+        // Inicializar y conectar WebSocket solo si no está conectado
+        if (webSocketManager == null) {
+            webSocketManager = WebSocketManager()
+            webSocketManager?.connect(myWebSocketListener)
+        }
 
         textoEstadoSistema.text = "Estado: Desconocido"
         textoConexionWs.text = "WS: Conectando..."
@@ -52,11 +54,15 @@ class MainActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        MainActivity.webSocketManager?.close()
-        Log.d("MainActivity", "WebSocket cerrado desde onDestroy")
+        // No cerramos el WebSocket aquí para que persista entre actividades
+        // webSocketManager?.close()
+        Log.d("MainActivity", "onDestroy ejecutado")
     }
 
     inner class MyWebSocketListener : WebSocketListener() {
+        private var lastUpdateTime = 0L
+        private val updateInterval = 500L // Actualizar la UI cada 500ms
+
         override fun onOpen(webSocket: WebSocket, response: Response) {
             runOnUiThread {
                 textoConexionWs.text = "WS: Conectado"
@@ -65,14 +71,18 @@ class MainActivity : AppCompatActivity() {
         }
 
         override fun onMessage(webSocket: WebSocket, text: String) {
-            runOnUiThread {
-                Log.d("MainActivity", "Mensaje WS recibido: $text")
-                when (text) {
-                    "ESTADO:TALLER_ACTIVO" -> textoEstadoSistema.text = "Modo Taller: ACTIVADO"
-                    "ESTADO:NORMAL_RELE_ON" -> textoEstadoSistema.text = "Modo Normal: Relé ON"
-                    "ESTADO:NORMAL_RELE_OFF" -> textoEstadoSistema.text = "Modo Normal: Relé OFF"
-                    else -> Log.w("MainActivity", "Mensaje WS no manejado aquí: $text")
+            val currentTime = System.currentTimeMillis()
+            if (currentTime - lastUpdateTime >= updateInterval) {
+                runOnUiThread {
+                    Log.d("MainActivity", "Mensaje WS recibido: $text")
+                    when (text) {
+                        "ESTADO:TALLER_ACTIVO" -> textoEstadoSistema.text = "Modo Taller: ACTIVADO"
+                        "ESTADO:NORMAL_RELE_ON" -> textoEstadoSistema.text = "Modo Normal: Relé ON"
+                        "ESTADO:NORMAL_RELE_OFF" -> textoEstadoSistema.text = "Modo Normal: Relé OFF"
+                        else -> Log.w("MainActivity", "Mensaje WS no manejado aquí: $text")
+                    }
                 }
+                lastUpdateTime = currentTime
             }
         }
 

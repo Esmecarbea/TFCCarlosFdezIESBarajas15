@@ -37,13 +37,14 @@ android {
 }
 
 dependencies {
-    implementation ("tech.gusavila92:java-android-websocket-client:1.2.2")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+    implementation("tech.gusavila92:java-android-websocket-client:1.2.2")
     implementation("com.squareup.okhttp3:okhttp:4.11.0")
     implementation("org.opencv:opencv:4.11.0")
-    implementation("androidx.core:core-ktx:1.15.0")
+    implementation("androidx.core:core-ktx:1.12.0") // Bajamos a una versión estable conocida
     implementation("androidx.appcompat:appcompat:1.7.0")
     implementation("com.google.android.material:material:1.12.0")
-    implementation("androidx.constraintlayout:constraintlayout:2.2.1")
+    implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     implementation("androidx.datastore:datastore-preferences:1.0.0")
     implementation("androidx.datastore:datastore:1.0.0")
     implementation("androidx.glance:glance:1.1.1")

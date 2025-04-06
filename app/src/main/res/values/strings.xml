@@ -11,6 +11,19 @@
     <string name="salir">SALIR</string> <!-- NUEVO -->
     <string name="descripcion_modo_taller">Texto explicativo modo taller</string>
     <string name="esperando_camara">Esperando Cámara</string>
-    <string name="registrar_cara">Registrar Usuario</string>
+    <string name="modo_registro">MODO REGISTRO</string>
+    <string name="switch_on">ON</string>
+    <string name="switch_off">OFF</string>
     <string name="gestionar_caras">Gestionar Usuarios</string>
+    <string name="error_websocket_no_inicializado">Error: WebSocket no inicializado</string>
+    <string name="error_cargar_video">Error al cargar vídeo (%1$s)</string>
+    <string name="error_cargar_video_timeout">Error al cargar vídeo: Timeout</string>
+    <string name="modo_registro_activado">Modo de registro activado</string>
+    <string name="modo_registro_desactivado">Modo de registro desactivado</string>
+    <string name="intruso_detectado">Intruso detectado</string>
+    <string name="registrando_cara">Registrando cara...</string>
+    <string name="limite_alcanzado_fallo_registrar">Límite alcanzado o fallo al registrar</string>
+    <string name="usuario_registrado_con_id">Usuario registrado con ID: %1$s</string>
+    <string name="error_websocket">Error en WebSocket: %1$s</string>
+    <string name="registrar_cara">Registrar Usuario</string>
 </resources>

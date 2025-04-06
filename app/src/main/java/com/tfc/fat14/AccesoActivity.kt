@@ -1,6 +1,7 @@
 package com.tfc.fat14
 
 import android.os.Bundle
+import android.view.WindowManager
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
@@ -14,6 +15,7 @@ import okhttp3.WebSocketListener
 import android.widget.TextView
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import androidx.appcompat.widget.SwitchCompat
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -30,14 +32,28 @@ class AccesoActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_acceso)
+        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
 
         lottieEsperandoCamara = findViewById(R.id.lottie_esperando_camara)
         textoEsperandoCamara = findViewById(R.id.texto_esperando_camara)
         webViewStream = findViewById(R.id.web_view_stream)
-        val botonRegistrarCara = findViewById<MaterialButton>(R.id.boton_registrar_cara)
+        val switchRegistrarCara = findViewById<SwitchCompat>(R.id.switch_registrar_cara) // Cambiado a Switch
         val botonGestionarCaras = findViewById<MaterialButton>(R.id.boton_gestionar_caras)
         val esp32Ip = "192.168.1.188"
         val streamUrl = "http://${esp32Ip}:81/stream"
+
+        // Inicializar y conectar el WebSocket
+        MainActivity.webSocketManager?.let {
+            it.connect(myWebSocketListener) // Conectar al WebSocket del ESP32 pasando el listener directamente
+        } ?: run {
+            Log.e("AccesoActivity", "WebSocketManager no está inicializado en MainActivity")
+            textoEsperandoCamara.text = getString(R.string.error_websocket_no_inicializado)
+            textoEsperandoCamara.visibility = View.VISIBLE
+            lottieEsperandoCamara.visibility = View.GONE
+            webViewStream.visibility = View.GONE
+            switchRegistrarCara.visibility = View.GONE
+            botonGestionarCaras.visibility = View.GONE
+        }
 
         // Configuración del WebView
         webViewStream.settings.javaScriptEnabled = true
@@ -51,11 +67,11 @@ class AccesoActivity : AppCompatActivity() {
                 Log.e("AccesoActivity", "Error en WebView ($errorCode): $description en $failingUrl")
                 if (failingUrl == streamUrl) {
                     runOnUiThread {
-                        textoEsperandoCamara.text = "Error al cargar vídeo ($errorCode)"
+                        textoEsperandoCamara.text = getString(R.string.error_cargar_video, errorCode.toString())
                         textoEsperandoCamara.visibility = View.VISIBLE
                         lottieEsperandoCamara.visibility = View.GONE
                         webViewStream.visibility = View.GONE
-                        botonRegistrarCara.visibility = View.GONE
+                        switchRegistrarCara.visibility = View.GONE
                         botonGestionarCaras.visibility = View.GONE
                     }
                 }
@@ -83,34 +99,29 @@ class AccesoActivity : AppCompatActivity() {
             }
 
             if (loadSuccess != true) {
-                textoEsperandoCamara.text = "Error al cargar vídeo: Timeout"
+                textoEsperandoCamara.text = getString(R.string.error_cargar_video_timeout)
                 textoEsperandoCamara.visibility = View.VISIBLE
                 lottieEsperandoCamara.visibility = View.GONE
                 webViewStream.visibility = View.GONE
-                botonRegistrarCara.visibility = View.GONE
+                switchRegistrarCara.visibility = View.GONE
                 botonGestionarCaras.visibility = View.GONE
             }
         }
 
-        // Listeners de botones
-        botonRegistrarCara.setOnClickListener {
-            Log.d("AccesoActivity", "Botón Registrar Cara pulsado")
-            isWaitingForEnrollment = true
-            MainActivity.webSocketManager?.sendMessage("enroll")
-            textoEsperandoCamara.text = "Registrando cara..."
-            textoEsperandoCamara.visibility = View.VISIBLE
-
-            // Timeout para esperar la respuesta de la ESP32
-            CoroutineScope(Dispatchers.Main).launch {
-                withTimeoutOrNull(15000) { // Esperamos 15 segundos
-                    while (isWaitingForEnrollment) {
-                        kotlinx.coroutines.delay(100)
-                    }
-                }
-                if (isWaitingForEnrollment) {
-                    textoEsperandoCamara.text = "Error: No se recibió respuesta de la ESP32"
-                    isWaitingForEnrollment = false
-                }
+        // Listener del Switch
+        switchRegistrarCara.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                Log.d("AccesoActivity", "Switch Modo Registro: ON")
+                MainActivity.webSocketManager?.sendMessage("activar_registro") // Enviar mensaje para activar
+                textoEsperandoCamara.text = getString(R.string.modo_registro_activado)
+                textoEsperandoCamara.visibility = View.VISIBLE
+                isWaitingForEnrollment = true
+            } else {
+                Log.d("AccesoActivity", "Switch Modo Registro: OFF")
+                MainActivity.webSocketManager?.sendMessage("desactivar_registro") // Enviar mensaje para desactivar
+                textoEsperandoCamara.text = getString(R.string.modo_registro_desactivado)
+                textoEsperandoCamara.visibility = View.VISIBLE
+                isWaitingForEnrollment = false
             }
         }
 
@@ -122,7 +133,7 @@ class AccesoActivity : AppCompatActivity() {
         // Visibilidad inicial
         if (webViewStream.visibility != View.GONE) {
             webViewStream.visibility = View.GONE
-            botonRegistrarCara.visibility = View.GONE
+            switchRegistrarCara.visibility = View.GONE
             botonGestionarCaras.visibility = View.GONE
         }
         lottieEsperandoCamara.visibility = View.VISIBLE
@@ -130,17 +141,22 @@ class AccesoActivity : AppCompatActivity() {
         textoEsperandoCamara.text = getString(R.string.esperando_camara)
 
         Handler(Looper.getMainLooper()).postDelayed({
-            if (textoEsperandoCamara.text.toString() != "Error al cargar vídeo" && webViewStream.isAttachedToWindow) {
+            if (textoEsperandoCamara.text.toString() != getString(R.string.error_cargar_video) && webViewStream.isAttachedToWindow) {
                 Log.d("AccesoActivity", "Mostrando WebView y botones...")
                 lottieEsperandoCamara.visibility = View.GONE
                 textoEsperandoCamara.visibility = View.GONE
                 webViewStream.visibility = View.VISIBLE
-                botonRegistrarCara.visibility = View.VISIBLE
+                switchRegistrarCara.visibility = View.VISIBLE
                 botonGestionarCaras.visibility = View.VISIBLE
             } else {
                 Log.d("AccesoActivity", "No se muestra WebView debido a error o actividad destruida")
             }
         }, 4000)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        MainActivity.webSocketManager?.close()
     }
 
     inner class MyWebSocketListener : WebSocketListener() {
@@ -158,22 +174,30 @@ class AccesoActivity : AppCompatActivity() {
                 runOnUiThread {
                     when (text) {
                         "Intruder" -> {
-                            textoEsperandoCamara.text = "Intruso detectado"
+                            textoEsperandoCamara.text = getString(R.string.intruso_detectado)
                             Log.d("AccesoActivity", "Intruso detectado mostrado en UI")
                         }
                         "Enrolling face..." -> {
-                            textoEsperandoCamara.text = "Registrando cara..."
+                            textoEsperandoCamara.text = getString(R.string.registrando_cara)
                             Log.d("AccesoActivity", "Registrando cara mostrado en UI")
                         }
                         "Enrollment failed or maximum faces reached" -> {
-                            textoEsperandoCamara.text = "Límite alcanzado o fallo al registrar"
+                            textoEsperandoCamara.text = getString(R.string.limite_alcanzado_fallo_registrar)
                             isWaitingForEnrollment = false
                             Log.d("AccesoActivity", "Fallo al registrar mostrado en UI")
+                        }
+                        "registrar_usuario_activado" -> {
+                            textoEsperandoCamara.text = getString(R.string.modo_registro_activado)
+                            Log.d("AccesoActivity", "Modo de registro activado mostrado en UI")
+                        }
+                        "registrar_usuario_desactivado" -> {
+                            textoEsperandoCamara.text = getString(R.string.modo_registro_desactivado)
+                            Log.d("AccesoActivity", "Modo de registro desactivado mostrado en UI")
                         }
                         else -> {
                             if (text.startsWith("Face enrolled with ID: ")) {
                                 val id = text.removePrefix("Face enrolled with ID: ").trim()
-                                textoEsperandoCamara.text = "Usuario registrado con ID: $id"
+                                textoEsperandoCamara.text = getString(R.string.usuario_registrado_con_id, id)
                                 isWaitingForEnrollment = false
                                 Log.d("AccesoActivity", "Usuario registrado con ID: $id mostrado en UI")
                             } else {
@@ -192,7 +216,7 @@ class AccesoActivity : AppCompatActivity() {
 
         override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
             runOnUiThread {
-                textoEsperandoCamara.text = "Error en WebSocket: ${t.message}"
+                textoEsperandoCamara.text = getString(R.string.error_websocket, t.message)
                 Log.e("AccesoActivity", "WebSocket Error: ${t.message}", t)
                 isWaitingForEnrollment = false
             }

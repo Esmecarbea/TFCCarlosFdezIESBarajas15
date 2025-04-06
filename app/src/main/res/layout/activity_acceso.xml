@@ -31,29 +31,30 @@
         app:layout_constraintDimensionRatio="4:3"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.3"
+        app:layout_constraintVertical_bias="0.15"
         app:layout_constraintWidth_percent="0.8" />
 
-    <!-- Botón Registrar Usuario -->
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/boton_registrar_cara"
+    <!-- Switch Modo Registro -->
+    <androidx.appcompat.widget.SwitchCompat
+        android:id="@+id/switch_registrar_cara"
         android:layout_width="250dp"
-        android:layout_height="wrap_content"
-        android:paddingVertical="18dp"
+        android:layout_height="80dp"
         android:layout_marginStart="32dp"
+        android:layout_marginTop="60dp"
         android:layout_marginEnd="32dp"
-        android:layout_marginTop="24dp"
-        android:text="@string/registrar_cara"
-        android:textColor="@color/white"
+        android:background="@drawable/switch_background"
+        android:paddingVertical="18dp"
+        android:text="@string/modo_registro"
+        android:textColor="@android:color/white"
+        android:textOff="@string/switch_off"
+        android:textOn="@string/switch_on"
         android:textSize="18sp"
-        app:backgroundTint="@color/green"
-        app:cornerRadius="500dp"
-        app:icon="@android:drawable/ic_menu_add"
+        android:thumbTint="@color/green"
+        android:trackTint="@color/light_gray"
         android:visibility="gone"
-        app:layout_constraintTop_toBottomOf="@id/web_view_stream"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/boton_gestionar_caras"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/texto_esperando_camara"
         app:layout_constraintVertical_chainStyle="packed" />
 
     <!-- Botón Gestionar Usuarios -->
@@ -64,7 +65,8 @@
         android:paddingVertical="18dp"
         android:layout_marginStart="32dp"
         android:layout_marginEnd="32dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginBottom="32dp"
         android:text="@string/gestionar_caras"
         android:textColor="@color/white"
         android:textSize="18sp"
@@ -72,13 +74,14 @@
         app:cornerRadius="500dp"
         app:icon="@android:drawable/ic_menu_manage"
         android:visibility="gone"
-        app:layout_constraintTop_toBottomOf="@id/boton_registrar_cara"
+        app:layout_constraintTop_toBottomOf="@id/switch_registrar_cara"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginBottom="32dp" />
+        app:layout_constraintBottom_toBottomOf="parent" />
 
     <!-- Animación Lottie -->
+
+    <!-- Texto Esperando -->
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/lottie_esperando_camara"
         android:layout_width="169dp"
@@ -86,26 +89,25 @@
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="@+id/web_view_stream"
         app:layout_constraintEnd_toEndOf="@+id/web_view_stream"
+        app:layout_constraintHorizontal_bias="0.437"
         app:layout_constraintStart_toStartOf="@+id/web_view_stream"
         app:layout_constraintTop_toTopOf="@+id/web_view_stream"
+        app:layout_constraintVertical_bias="0.0"
         app:lottie_autoPlay="true"
         app:lottie_loop="true"
         app:lottie_rawRes="@raw/scanface" />
 
-    <!-- Texto Esperando -->
     <TextView
         android:id="@+id/texto_esperando_camara"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="90dp"
         android:text="@string/esperando_camara"
         android:textColor="@android:color/white"
         android:textSize="20sp"
         android:visibility="visible"
-        app:layout_constraintEnd_toEndOf="@+id/lottie_esperando_camara"
-        app:layout_constraintStart_toStartOf="@+id/lottie_esperando_camara"
-        app:layout_constraintTop_toBottomOf="@+id/lottie_esperando_camara" />
-
-
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/web_view_stream" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

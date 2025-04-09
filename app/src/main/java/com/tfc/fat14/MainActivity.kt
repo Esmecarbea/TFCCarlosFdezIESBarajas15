@@ -6,6 +6,7 @@ import android.util.Log
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.button.MaterialButton
+import okhttp3.OkHttpClient
 import okhttp3.Response
 import okhttp3.WebSocket
 import okhttp3.WebSocketListener
@@ -42,11 +43,23 @@ class MainActivity : AppCompatActivity() {
         textoConexionWs.text = "WS: Conectando..."
 
         botonIrAcceso.setOnClickListener {
+            // Forzar conexión WebSocket si no está conectado
+            if (webSocketManager == null || !webSocketManager!!.isConnected()) {
+                webSocketManager = WebSocketManager()
+                webSocketManager?.connect(myWebSocketListener)
+                Log.d("MainActivity", "Reconectando WebSocket para Acceso")
+            }
             val intent = Intent(this, AccesoActivity::class.java)
             startActivity(intent)
         }
 
         botonModoTaller.setOnClickListener {
+            // Forzar conexión WebSocket si no está conectado
+            if (webSocketManager == null || !webSocketManager!!.isConnected()) {
+                webSocketManager = WebSocketManager()
+                webSocketManager?.connect(myWebSocketListener)
+                Log.d("MainActivity", "Reconectando WebSocket para Modo Taller")
+            }
             val intent = Intent(this, ModoTallerActivity::class.java)
             startActivity(intent)
         }

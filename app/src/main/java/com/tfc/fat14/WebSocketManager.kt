@@ -12,9 +12,9 @@ class WebSocketManager {
     private val client: OkHttpClient = OkHttpClient.Builder()
         .readTimeout(0, TimeUnit.MILLISECONDS)
         .build()
-    private val wsUrl = "ws://192.168.1.188:82/ws" // Correcto según Arduino
+    private val wsUrl = "ws://192.168.1.188:82/ws"
     private var listener: WebSocketListener? = null
-    var lastReceivedMessage: String? = null // Almacenar el último mensaje
+    var lastReceivedMessage: String? = null
 
     fun connect(listener: WebSocketListener) {
         this.listener = listener
@@ -55,5 +55,13 @@ class WebSocketManager {
     fun close() {
         webSocket?.close(1000, "Cierre normal")
         Log.d("WebSocketManager", "WebSocket cerrado")
+    }
+
+    fun isConnected(): Boolean {
+        return webSocket != null && try {
+            webSocket?.send("") == true
+        } catch (e: Exception) {
+            false
+        }
     }
 }

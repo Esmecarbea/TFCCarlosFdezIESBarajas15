@@ -45,11 +45,14 @@ class ModoTallerActivity : AppCompatActivity() {
 
         // Listener del botón Confirmar
         botonConfirmar.setOnClickListener {
-            // Verificar si el WebSocketManager está listo antes de enviar
-            // Enviar mensaje directamente (sin verificar isConnected por ahora)
-            MainActivity.webSocketManager?.sendMessage("MODO_TALLER_ACTIVADO")
-            Log.d("WebSocket", "Enviado: MODO_TALLER_ACTIVADO")
-
+            Log.d("ModoTallerActivity", "Botón CONFIRMAR pulsado")
+            val wsManager = MainActivity.webSocketManager
+            if (wsManager != null) {
+                wsManager.sendMessage("MODO_TALLER_ACTIVADO")
+                Log.d("WebSocket", "Enviado: MODO_TALLER_ACTIVADO")
+            } else {
+                Log.e("WebSocket", "Error: WebSocketManager es null")
+            }
 
             // --- Gestión UI ---
             // Detener animación inicial si está corriendo
@@ -78,9 +81,14 @@ class ModoTallerActivity : AppCompatActivity() {
 
         // Listener del botón Desactivar
         botonDesactivar.setOnClickListener {
-            // Enviar mensaje directamente (sin verificar isConnected por ahora)
-            MainActivity.webSocketManager?.sendMessage("MODO_TALLER_DESACTIVADO")
-            Log.d("WebSocket", "Enviado: MODO_TALLER_DESACTIVADO")
+            Log.d("ModoTallerActivity", "Botón DESACTIVAR pulsado")
+            val wsManager = MainActivity.webSocketManager
+            if (wsManager != null) {
+                wsManager.sendMessage("MODO_TALLER_DESACTIVADO")
+                Log.d("WebSocket", "Enviado: MODO_TALLER_DESACTIVADO")
+            } else {
+                Log.e("WebSocket", "Error: WebSocketManager es null")
+            }
 
             // --- Gestión UI ---
             // Restaurar texto y color

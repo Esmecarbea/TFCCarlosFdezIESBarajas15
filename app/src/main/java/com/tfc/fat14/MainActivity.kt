@@ -3,7 +3,6 @@ package com.tfc.fat14
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.button.MaterialButton
 import okhttp3.OkHttpClient
@@ -19,8 +18,6 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var botonIrAcceso: MaterialButton
     private lateinit var botonModoTaller: MaterialButton
-    private lateinit var textoEstadoSistema: TextView
-    private lateinit var textoConexionWs: TextView
     private lateinit var myWebSocketListener: MyWebSocketListener
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -29,8 +26,6 @@ class MainActivity : AppCompatActivity() {
 
         botonIrAcceso = findViewById(R.id.boton_ir_acceso)
         botonModoTaller = findViewById(R.id.boton_modo_taller)
-        textoEstadoSistema = findViewById(R.id.texto_estado_sistema)
-        textoConexionWs = findViewById(R.id.texto_conexion_ws)
         myWebSocketListener = MyWebSocketListener()
 
         // Inicializar y conectar WebSocket solo si no está conectado
@@ -39,12 +34,9 @@ class MainActivity : AppCompatActivity() {
             webSocketManager?.connect(myWebSocketListener)
         }
 
-        textoEstadoSistema.text = "Estado: Desconocido"
-        textoConexionWs.text = "WS: Conectando..."
-
         botonIrAcceso.setOnClickListener {
             // Forzar conexión WebSocket si no está conectado
-            if (webSocketManager == null || !webSocketManager!!.isConnected()) {
+            if (webSocketManager == null || webSocketManager?.isConnected() != true) {
                 webSocketManager = WebSocketManager()
                 webSocketManager?.connect(myWebSocketListener)
                 Log.d("MainActivity", "Reconectando WebSocket para Acceso")
@@ -55,7 +47,7 @@ class MainActivity : AppCompatActivity() {
 
         botonModoTaller.setOnClickListener {
             // Forzar conexión WebSocket si no está conectado
-            if (webSocketManager == null || !webSocketManager!!.isConnected()) {
+            if (webSocketManager == null || webSocketManager?.isConnected() != true) {
                 webSocketManager = WebSocketManager()
                 webSocketManager?.connect(myWebSocketListener)
                 Log.d("MainActivity", "Reconectando WebSocket para Modo Taller")
@@ -78,7 +70,6 @@ class MainActivity : AppCompatActivity() {
 
         override fun onOpen(webSocket: WebSocket, response: Response) {
             runOnUiThread {
-                textoConexionWs.text = "WS: Conectado"
                 Log.d("MainActivity", "WebSocket Conectado")
             }
         }
@@ -89,9 +80,9 @@ class MainActivity : AppCompatActivity() {
                 runOnUiThread {
                     Log.d("MainActivity", "Mensaje WS recibido: $text")
                     when (text) {
-                        "ESTADO:TALLER_ACTIVO" -> textoEstadoSistema.text = "Modo Taller: ACTIVADO"
-                        "ESTADO:NORMAL_RELE_ON" -> textoEstadoSistema.text = "Modo Normal: Relé ON"
-                        "ESTADO:NORMAL_RELE_OFF" -> textoEstadoSistema.text = "Modo Normal: Relé OFF"
+                        "ESTADO:TALLER_ACTIVO" -> Log.d("MainActivity", "Modo Taller: ACTIVADO")
+                        "ESTADO:NORMAL_RELE_ON" -> Log.d("MainActivity", "Modo Normal: Relé ON")
+                        "ESTADO:NORMAL_RELE_OFF" -> Log.d("MainActivity", "Modo Normal: Relé OFF")
                         else -> Log.w("MainActivity", "Mensaje WS no manejado aquí: $text")
                     }
                 }
@@ -101,14 +92,12 @@ class MainActivity : AppCompatActivity() {
 
         override fun onClosing(webSocket: WebSocket, code: Int, reason: String) {
             runOnUiThread {
-                textoConexionWs.text = "WS: Cerrando..."
                 Log.d("MainActivity", "WebSocket cerrando: $code / $reason")
             }
         }
 
         override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
             runOnUiThread {
-                textoConexionWs.text = "WS: Error"
                 Log.e("MainActivity", "WebSocket Error: ${t.message}", t)
             }
         }

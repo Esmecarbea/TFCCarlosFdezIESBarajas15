@@ -49,6 +49,8 @@
         android:textOff="@string/switch_off"
         android:textOn="@string/switch_on"
         android:textSize="18sp"
+        android:gravity="center"
+        android:layout_gravity="center"
         android:thumbTint="@color/green"
         android:trackTint="@color/light_gray"
         android:visibility="gone"

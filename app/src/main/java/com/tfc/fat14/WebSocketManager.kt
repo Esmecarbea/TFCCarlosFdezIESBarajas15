@@ -12,7 +12,7 @@ class WebSocketManager {
     private val client: OkHttpClient = OkHttpClient.Builder()
         .readTimeout(0, TimeUnit.MILLISECONDS)
         .build()
-    private val wsUrl = "ws://192.168.1.188:82/ws"
+    private val wsUrl = "ws://192.168.1.137:82/ws"
     private var listener: WebSocketListener? = null
     var lastReceivedMessage: String? = null
 

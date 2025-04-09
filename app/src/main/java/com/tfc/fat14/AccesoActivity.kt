@@ -39,7 +39,7 @@ class AccesoActivity : AppCompatActivity() {
         webViewStream = findViewById(R.id.web_view_stream)
         val switchRegistrarCara = findViewById<SwitchCompat>(R.id.switch_registrar_cara) // Cambiado a Switch
         val botonGestionarCaras = findViewById<MaterialButton>(R.id.boton_gestionar_caras)
-        val esp32Ip = "192.168.1.188"
+        val esp32Ip = "192.168.1.137"
         val streamUrl = "http://${esp32Ip}:81/stream"
 
         // Inicializar y conectar el WebSocket

@@ -12,6 +12,7 @@
     <string name="descripcion_modo_taller">Texto explicativo modo taller</string>
     <string name="esperando_camara">Esperando Cámara</string>
     <string name="modo_registro">MODO REGISTRO</string>
+    <string name="modo_taller">MODO TALLER</string>
     <string name="switch_on">ON</string>
     <string name="switch_off">OFF</string>
     <string name="gestionar_caras">Gestionar Usuarios</string>

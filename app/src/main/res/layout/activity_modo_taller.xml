@@ -42,87 +42,61 @@
         app:layout_constraintTop_toTopOf="@+id/guideline_center"
         tools:ignore="SpeakableTextPresentCheck" />
 
-    <!-- Barrier ya no es necesaria si posicionamos botones respecto al texto -->
-    <!--
-    <androidx.constraintlayout.widget.Barrier
-        android:id="@+id/barrier"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:barrierDirection="top"
-        app:constraint_referenced_ids="texto_modo_taller"/>
-     -->
-
-    <!-- Botón Desactivar -->
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/boton_desactivar"
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:paddingVertical="24dp"
-        android:text="@string/desactivar"
-        android:textColor="@color/white"
-        app:backgroundTint="@color/red"
-        android:visibility="gone"
-        app:cornerRadius="500dp"
-        app:layout_constraintTop_toBottomOf="@+id/texto_modo_taller"
-        app:layout_constraintBottom_toTopOf="@+id/boton_salir_taller"
-        app:layout_constraintStart_toStartOf="parent"
+    <!-- Switch para activar/desactivar el modo taller -->
+    <androidx.appcompat.widget.SwitchCompat
+        android:id="@+id/switch_modo_taller"
+        android:layout_width="250dp"
+        android:layout_height="80dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="32dp"
+        android:background="@drawable/switch_background"
+        android:paddingVertical="18dp"
+        android:text="@string/modo_taller"
+        android:textColor="@android:color/white"
+        android:textOff="@string/switch_off"
+        android:textOn="@string/switch_on"
+        android:textSize="18sp"
+        android:gravity="center"
+        android:layout_gravity="center"
+        android:thumbTint="@color/green"
+        android:trackTint="@color/light_gray"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintVertical_chainStyle="packed"
-        android:layout_marginTop="32dp"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/texto_modo_taller" />
 
-    <!-- NUEVO BOTÓN SALIR -->
+    <!-- Círculo con texto que cambia de color y texto debajo del Switch -->
+    <TextView
+        android:id="@+id/circle_text_view"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:background="@drawable/circle_green"
+        android:layout_marginTop="16dp"
+        android:gravity="center"
+        android:text="@string/switch_off"
+        android:textColor="@android:color/white"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toBottomOf="@+id/switch_modo_taller"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- Botón SALIR -->
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/boton_salir_taller"
+        android:id="@+id/boton_salir"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="32dp"
         android:paddingVertical="24dp"
         android:text="@string/salir"
         android:textColor="@color/white"
-        app:backgroundTint="@color/teal_700"
-        android:visibility="gone"
+        android:textStyle="bold"
+        app:backgroundTint="@color/grey"
         app:cornerRadius="500dp"
-        app:layout_constraintTop_toBottomOf="@+id/boton_desactivar"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/circle_text_view"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="32dp"/>
-
-    <!-- Botones originales -->
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/boton_cancelar"
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:backgroundTint="@color/red"
-        android:paddingVertical="24dp"
-        android:text="@string/cancelar"
-        android:textColor="@color/white"
-        android:visibility="visible"
-        app:cornerRadius="500dp"
-        app:layout_constraintBottom_toTopOf="@+id/boton_confirmar"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/texto_modo_taller"
-        app:layout_constraintVertical_chainStyle="packed" />
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/boton_confirmar"
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:backgroundTint="@color/green"
-        android:paddingVertical="24dp"
-        android:text="@string/confirmar"
-        android:textColor="@color/white"
-        app:cornerRadius="500dp"
-        android:layout_marginTop="16dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/boton_cancelar"
-        android:layout_marginBottom="32dp"
-        android:visibility="visible"/>
+        app:layout_constraintBottom_toBottomOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
